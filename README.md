@@ -16,3 +16,7 @@ npm install
 ```
 in de directory waar het ".git" bestand in zit voordat je ook maar iets gaat doen. 
 Dit command zorgt er namelijk voor dat de benodigde dependencies worden gedownload
+
+## Info
+Op het moment ben ik nog bezig met het leren van scrapen en het omgaan met cheerio incombinatie met puppeteer.
+<p style="color: red; font-size:1.2em;">De manier hoe het programma scrapet en hoe het zijn informatie verwerkt, is dus nog niet final!</p>
