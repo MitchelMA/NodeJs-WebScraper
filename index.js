@@ -5,19 +5,22 @@ const rp = require("request-promise");
 const url = "https://www.marktplaats.nl/q/iphone+11/";
 const fs = require("fs");
 const { html } = require("cheerio/lib/static");
+for (let i = 1; i <= 10; ++i) {
+  (async () => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
 
-(async () => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  await page.goto(url);
-  const content = await page.content();
+    await page.goto(url + `p/${i}/`);
+    const content = await page.content();
 
-  search(content);
+    await search(content, i);
 
-  await browser.close();
-})();
+    await browser.close();
+  })();
+}
 
-function search(content) {
+async function search(content, pageNum) {
+  console.log(pageNum);
   const $ = cheerio.load(content);
   const ITEMCSS =
     "ul.mp-Listings.mp-Listings--list-view > li.mp-Listing.mp-Listing--list-item";
@@ -95,6 +98,7 @@ function search(content) {
   //#endregion
   //-----------------------------------------------------//
 
+  //-----------------------------------------------------//
   //#region combining
   // combine all this ^ info into one array, which will contain objects
   let itemObjects = [];
@@ -103,14 +107,32 @@ function search(content) {
   for (let i = 0; i < titles.length; ++i) {
     let tmp = {
       title: titles[i],
-      hyperlink: hyperlinks[i],
-      descriptions: descriptions[i],
+      hyperlink: "https://www.marktplaats.nl" + hyperlinks[i],
+      description: descriptions[i],
       price: prices[i],
       listingDate: listingDates[i],
       other: others[i],
     };
     itemObjects.push(tmp);
   }
-  console.log(itemObjects);
   //#endregion
+  //-----------------------------------------------------//
+
+  //-----------------------------------------------------//
+  //#region write to data.json
+  // first check if there is already a data.json file to open
+  let endData = {};
+  try {
+    const readData = JSON.parse(fs.readFileSync("data.json"));
+    endData = readData;
+    endData[`page ${pageNum}`] = itemObjects;
+    fs.writeFileSync("data.json", JSON.stringify(endData, null, 2));
+    // code continuing after this means that it did not fail
+  } catch (err) {
+    // so that means when the data.json file is empty or doesn't exist, i can immediately write to it
+    endData[`page ${pageNum}`] = itemObjects;
+    fs.writeFileSync("data.json", JSON.stringify(endData, null, 2));
+  }
+  //#endregion
+  //-----------------------------------------------------//
 }

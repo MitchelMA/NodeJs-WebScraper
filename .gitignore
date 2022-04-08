@@ -131,3 +131,6 @@ dist
 
 # for obsidian (markdown editor)
 .obsidian/
+
+# ignore the stored data in data.json
+data.json
