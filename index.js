@@ -1,11 +1,10 @@
 // https://www.freecodecamp.org/news/the-ultimate-guide-to-web-scraping-with-node-js-daa2027dcd3/
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
-const rp = require("request-promise");
 const url =
   "https://www.marktplaats.nl/l/telecommunicatie/mobiele-telefoons-apple-iphone/#q:iphone+11|sortBy:OPTIMIZED|sortOrder:DECREASING/";
 const fs = require("fs");
-const { html } = require("cheerio/lib/static");
+
 async function main() {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
@@ -119,18 +118,93 @@ function search(content) {
 
   //-----------------------------------------------------//
   //#region write to data.json
+  const newData = {
+    query: url,
+    items: [...itemObjects],
+  };
   // first check if there is already a data.json file to open
   try {
     // code continuing after this means that it did not fail
     const oldData = JSON.parse(fs.readFileSync("data.json"));
-    fs.writeFileSync("data.json", JSON.stringify(itemObjects, null, 2));
+    const newItems = checkDifference({ ...newData }, { ...oldData });
+    // logging the new items
+    if (newItems.newQuery) {
+      console.log(
+        "Met een nieuwe search-query is het programma ervan uit gegaan dat alle items nieuw waren: "
+      );
+      console.log(newItems.newItems);
+    } else {
+      console.log(
+        "Met dezelfde search-query heeft het programma " +
+          newItems.newItems.length +
+          " aantal nieuwe items gevonden: "
+      );
+      console.log(newItems.newItems);
+    }
+
+    // before writing to the file, send email -------------//
+    // code that sends an email when new items are found:
+
+    //-----------------------------------------------------//
+
+    fs.writeFileSync("data.json", JSON.stringify(newData, null, 2));
   } catch (err) {
     // so that means when the data.json file is empty or doesn't exist, I can immediately write to it
-    fs.writeFileSync("data.json", JSON.stringify(endData, null, 2));
+    fs.writeFileSync("data.json", JSON.stringify(newData, null, 2));
   }
-
   //#endregion
   //-----------------------------------------------------//
 }
 
+/**
+ * This function compares the new and the old data
+ * @param {Object} newData New found data
+ * @param {Object} oldData Old data
+ * @return {Object} An object containing "newQuery": true if the search query was different from the last; else false.
+ * And the new found items: "newItems"
+ */
+function checkDifference(newData, oldData) {
+  // first, check if the queries were the same
+  // if they are not the same, assume that all the found items are new
+  if (newData.query !== oldData.query) {
+    return {
+      newQuery: true,
+      newItems: [...newData.items],
+    };
+  }
+
+  // else if the queries are equal
+  else {
+    let newItems = [];
+    for (let i = 0; i < newData.items.length; i++) {
+      if (!dataContains({ ...oldData }, newData.items[i])) {
+        newItems.push(newData.items[i]);
+      }
+    }
+    return {
+      newQuery: false,
+      newItems: [...newItems],
+    };
+  }
+}
+
+/**
+ * Checks if the data contains a specified item
+ * @param {*} data Data object you want to check
+ * @param {*} item The item which's presence you want to determine
+ * @returns Boolean which determines the presence of the item
+ */
+function dataContains(data, item) {
+  for (let i = 0; i < data.items.length; i++) {
+    if (data.items[i].title === item.title) return true;
+  }
+  return false;
+}
+
 main().catch(console.error);
+
+// SIGINT (Signal interupt)
+process.on("SIGINT", function () {
+  console.log("Shutting Down...");
+  process.exit(0);
+});
