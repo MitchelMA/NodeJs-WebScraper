@@ -2,10 +2,11 @@
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const rp = require("request-promise");
-const url = "https://www.marktplaats.nl/q/iphone+11/";
+const url =
+  "https://www.marktplaats.nl/l/telecommunicatie/mobiele-telefoons-apple-iphone/#q:iphone+11|sortBy:OPTIMIZED|sortOrder:DECREASING/";
 const fs = require("fs");
 const { html } = require("cheerio/lib/static");
-(async () => {
+async function main() {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
@@ -15,7 +16,7 @@ const { html } = require("cheerio/lib/static");
   search(content);
 
   await browser.close();
-})();
+}
 
 function search(content) {
   const $ = cheerio.load(content);
@@ -112,7 +113,7 @@ function search(content) {
     };
     itemObjects.push(tmp);
   }
-  console.log(itemObjects);
+  console.log(itemObjects.length + " aantal producten gevonden");
   //#endregion
   //-----------------------------------------------------//
 
@@ -131,3 +132,5 @@ function search(content) {
   //#endregion
   //-----------------------------------------------------//
 }
+
+main().catch(console.error);
