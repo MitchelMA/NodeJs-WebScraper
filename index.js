@@ -5,7 +5,17 @@ const url =
   "https://www.marktplaats.nl/l/telecommunicatie/mobiele-telefoons-apple-iphone/#q:iphone+11|sortBy:OPTIMIZED|sortOrder:DECREASING/";
 const fs = require("fs");
 
-async function main() {
+// the desired difference in time between checking in minutes
+const desiredTimeDiff = 1;
+
+// the time in milliseconds after which the interval to check will for the difference in time
+const checkTime = 1000;
+
+// the last date with which the interval will check the progression of time
+let lastDate = new Date();
+
+async function main(time) {
+  console.log(time.toFixed(1) + " minuten sinds de laatste keer checken");
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
@@ -201,7 +211,23 @@ function dataContains(data, item) {
   return false;
 }
 
-main().catch(console.error);
+main(0).catch(console.error);
+
+// interval to check the progression of time
+setInterval(() => {
+  let currentDate = new Date();
+  // current difference in time in minutes
+  let currentDiff = (currentDate - lastDate) / 1000 / 60;
+
+  // after the necessary amount of time has passed, the main may be called again
+  if (currentDiff >= desiredTimeDiff) {
+    // reset the lastDate
+    lastDate = new Date();
+
+    // call the main
+    main(currentDiff).catch(console.log);
+  }
+}, checkTime);
 
 // SIGINT (Signal interupt)
 process.on("SIGINT", function () {
