@@ -5,17 +5,22 @@ const url =
   "https://www.marktplaats.nl/l/telecommunicatie/mobiele-telefoons-apple-iphone/#q:iphone+11|sortBy:OPTIMIZED|sortOrder:DECREASING/";
 const fs = require("fs");
 
+// read the config.json file
+const CONFIG = JSON.parse(fs.readFileSync("./config.json"));
+console.log("instellingen omvatten: ");
+console.log(CONFIG);
+
 // the desired difference in time between checking in minutes
-const desiredTimeDiff = 1;
+const desiredTimeDiff = CONFIG["scrape-interval"];
 
 // the time in milliseconds after which the interval to check will for the difference in time
-const checkTime = 1000;
+const checkTime = 10000;
 
 // the last date with which the interval will check the progression of time
 let lastDate = new Date();
 
 async function main(time) {
-  console.log(time.toFixed(1) + " minuten sinds de laatste keer checken");
+  console.log(time.toFixed(1) + " minuten sinds de laatste keer scrapen");
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
@@ -147,7 +152,7 @@ function search(content) {
       console.log(
         "Met dezelfde search-query heeft het programma " +
           newItems.newItems.length +
-          " aantal nieuwe items gevonden: "
+          " nieuw(e) item(s) gevonden: "
       );
       console.log(newItems.newItems);
     }
