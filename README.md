@@ -8,15 +8,23 @@ Als je net de repo hebt gecloned, run dan eerst
 npm install
 ```
 in de directory waar het ".git" bestand in zit voordat je ook maar iets gaat doen. 
-Dit command zorgt er namelijk voor dat de benodigde dependencies worden gedownload
+Dit command zorgt er namelijk voor dat de benodigde dependencies worden gedownload.  
+Zorg er ook voor dat je een ".env" bestand in je directory hebt staan met het volgende erin:
+```env
+EMAIL_SENDER=email-sender-address
+EMAIL_RECIEVER=email-reciever-address
+EMAIL_PASSWORD=email-sender-password
+```
 
 ## Info
 Ik doe hier een poging om ee web-scraper te maken in NodeJS.
 Hiervoor gebruik ik de volgende pagina voor informatie: [The Ultimate Guide to Web Scraping with Node.js](https://www.freecodecamp.org/news/the-ultimate-guide-to-web-scraping-with-node-js-daa2027dcd3/)  
 Verder maak ik gebruik van de volgende dependencies:
- -  cheerio
+ - cheerio
  - puppeteer
  - request
  - request-promise
+ - dotenv
+ - nodemailer
   
  versies staan in de [package.json](./package.json).
