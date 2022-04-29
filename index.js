@@ -5,10 +5,17 @@ const url =
   "https://www.marktplaats.nl/l/telecommunicatie/mobiele-telefoons-apple-iphone/#q:iphone+11|sortBy:OPTIMIZED|sortOrder:DECREASING/";
 const fs = require("fs");
 
+// import my email module
+const { eMail } = require("./email.js");
+
 // read the config.json file
 const CONFIG = JSON.parse(fs.readFileSync("./config.json"));
 console.log("instellingen omvatten: ");
 console.log(CONFIG);
+
+// email constants
+const EMAIL_SERVICE = CONFIG["e-mail"].service;
+const EMAIL_HOST = CONFIG["e-mail"].host;
 
 // the desired difference in time between checking in minutes
 const desiredTimeDiff = CONFIG["scrape-interval"];
@@ -159,6 +166,8 @@ function search(content) {
 
     // before writing to the file, send email -------------//
     // code that sends an email when new items are found:
+    if (newItems.newItems.length > 0) {
+    }
 
     //-----------------------------------------------------//
 
