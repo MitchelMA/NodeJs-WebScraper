@@ -1,3 +1,7 @@
 {
-    "scrape-interval": 1
+    "scrape-interval": 1,
+    "e-mail": {
+        "service": "gmail",
+        "host": "smtp.gmail.com"
+    }
 }

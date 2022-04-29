@@ -2,13 +2,20 @@
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const url =
-  "https://www.marktplaats.nl/l/telecommunicatie/mobiele-telefoons-apple-iphone/#q:iphone+11|sortBy:OPTIMIZED|sortOrder:DECREASING/";
+  "https://www.marktplaats.nl/l/telecommunicatie/mobiele-telefoons-apple-iphone/#q:iphone+11|sortBy:SORT_INDEX|sortOrder:DECREASING/";
 const fs = require("fs");
+
+// import my email module
+const { eMail } = require("./email.js");
 
 // read the config.json file
 const CONFIG = JSON.parse(fs.readFileSync("./config.json"));
 console.log("instellingen omvatten: ");
 console.log(CONFIG);
+
+// email constants
+const EMAIL_SERVICE = CONFIG["e-mail"].service;
+const EMAIL_HOST = CONFIG["e-mail"].host;
 
 // the desired difference in time between checking in minutes
 const desiredTimeDiff = CONFIG["scrape-interval"];
@@ -159,10 +166,17 @@ function search(content) {
 
     // before writing to the file, send email -------------//
     // code that sends an email when new items are found:
+    if (newItems.newItems.length > 0) {
+      eMail(
+        { query: url.slice(0, -1), ...newItems },
+        EMAIL_SERVICE,
+        EMAIL_HOST
+      ).catch(console.error);
+    }
 
     //-----------------------------------------------------//
-
-    fs.writeFileSync("data.json", JSON.stringify(newData, null, 2));
+    if (itemObjects.length > 0)
+      fs.writeFileSync("data.json", JSON.stringify(newData, null, 2));
   } catch (err) {
     // so that means when the data.json file is empty or doesn't exist, I can immediately write to it
     fs.writeFileSync("data.json", JSON.stringify(newData, null, 2));
