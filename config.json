@@ -3,5 +3,12 @@
     "e-mail": {
         "service": "gmail",
         "host": "smtp.gmail.com"
+    },
+    "query":{
+        "product": "Iphone 11",
+        "categorie": "telecommunicatie/mobiele-telefoons-apple-iphone",
+        "postcode": "",
+        "afstandMeters": "",
+        "sort": "Daturm (nieuw-oud)"
     }
 }

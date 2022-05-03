@@ -1,17 +1,21 @@
 // https://www.freecodecamp.org/news/the-ultimate-guide-to-web-scraping-with-node-js-daa2027dcd3/
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
-const url =
-  "https://www.marktplaats.nl/l/telecommunicatie/mobiele-telefoons-apple-iphone/#q:iphone+11|sortBy:SORT_INDEX|sortOrder:DECREASING/";
+// const url =
+//   "https://www.marktplaats.nl/l/telecommunicatie/mobiele-telefoons-apple-iphone/#q:iphone+11|sortBy:SORT_INDEX|sortOrder:DECREASING/";
 const fs = require("fs");
 
 // import my email module
 const { eMail } = require("./email.js");
+// import url generator
+const { urlGen } = require("./urlgen");
 
 // read the config.json file
 const CONFIG = JSON.parse(fs.readFileSync("./config.json"));
 console.log("instellingen omvatten: ");
 console.log(CONFIG);
+console.log("generated url: " + urlGen(CONFIG["query"]));
+let url = urlGen(CONFIG["query"]);
 
 // email constants
 const EMAIL_SERVICE = CONFIG["e-mail"].service;
