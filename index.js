@@ -7,11 +7,15 @@ const fs = require("fs");
 
 // import my email module
 const { eMail } = require("./email.js");
+// import url generator
+const { urlGen } = require("./urlgen");
 
 // read the config.json file
 const CONFIG = JSON.parse(fs.readFileSync("./config.json"));
 console.log("instellingen omvatten: ");
 console.log(CONFIG);
+urlGen(CONFIG["query"]);
+process.exit(0);
 
 // email constants
 const EMAIL_SERVICE = CONFIG["e-mail"].service;
