@@ -8,6 +8,6 @@
     "request-promise": "^4.2.6"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node ."
   }
 }

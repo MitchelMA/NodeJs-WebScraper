@@ -2,11 +2,14 @@
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const fs = require("fs");
+console.log("DEBUG");
 
 // import my email module
 const { eMail } = require("./email.js");
 // import url generator
 const { urlGen } = require("./urlgen");
+// import socket-client
+const { sendData } = require("./client.js");
 
 // read the config.json file and generate the url
 const CONFIG = JSON.parse(fs.readFileSync("./config.json"));
@@ -169,12 +172,13 @@ function search(content) {
     // before writing to the file, send email -------------//
     // code that sends an email when new items are found:
     if (newItems.newItems.length > 0) {
-      eMail(
-        { query: url.slice(0, -1), ...newItems },
-        EMAIL_SERVICE,
-        EMAIL_HOST
-      ).catch(console.error);
+      // eMail(
+      //   { query: url.slice(0, -1), ...newItems },
+      //   EMAIL_SERVICE,
+      //   EMAIL_HOST
+      // ).catch(console.error);
     }
+    sendData({ query: url.slice(0, -1) });
 
     //-----------------------------------------------------//
     if (itemObjects.length > 0)
