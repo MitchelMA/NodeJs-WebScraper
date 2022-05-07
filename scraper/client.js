@@ -16,7 +16,9 @@ function sendData(data) {
   globData = JSON.stringify(data);
   client.connect(PORT, HOST, () => {
     console.log("Data: ");
+    console.log(globData.length);
     console.log(globData);
+    console.log(data);
   });
 }
 

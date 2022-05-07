@@ -2,7 +2,6 @@
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const fs = require("fs");
-console.log("DEBUG");
 
 // import my email module
 const { eMail } = require("./email.js");
@@ -177,8 +176,12 @@ function search(content) {
       //   EMAIL_SERVICE,
       //   EMAIL_HOST
       // ).catch(console.error);
+      console.log(newItems.newItems.map((a) => a.hyperlink));
+      sendData({
+        query: url.slice(0, -1),
+        hyperlinks: newItems.newItems.map((a) => a.hyperlink),
+      });
     }
-    sendData({ query: url.slice(0, -1) });
 
     //-----------------------------------------------------//
     if (itemObjects.length > 0)
