@@ -53,7 +53,7 @@ function urlGen(queryInfo) {
     queryDistance.length === 0 &&
     querySort.length === 0
   ) {
-    return BASEURL + `l/${queryCategory}/#q:${queryProdcut}|/`;
+    return BASEURL + `l/${queryCategory}/#q:${queryProdcut}/`;
   }
   // when only the product and the queryAddress have a value
   else if (

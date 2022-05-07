@@ -12,8 +12,8 @@ const { urlGen } = require("./urlgen");
 const CONFIG = JSON.parse(fs.readFileSync("./config.json"));
 console.log("instellingen omvatten: ");
 console.log(CONFIG);
-console.log("generated url: " + urlGen(CONFIG["query"]));
-let url = urlGen(CONFIG["query"]);
+console.log("generated url: " + encodeURI(urlGen(CONFIG["query"])));
+let url = encodeURI(urlGen(CONFIG["query"]));
 
 // email constants
 const EMAIL_SERVICE = CONFIG["e-mail"].service;
