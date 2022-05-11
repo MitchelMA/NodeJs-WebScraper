@@ -62,11 +62,12 @@ def handle_client(conn, addr):
             try:
                 msg_length = int(msg_length)
                 msg = conn.recv(msg_length).decode(FORMAT)
-                print("MSG: " + msg)
+                print("MSG: " + msg + "\n")
                 jsonMsg = json.loads(msg)
-                print(jsonMsg)
+                print("\nJSON: ", jsonMsg)
             except:
-                pass
+                print("Iets ging mis!")
+                
 
             # always send a message back to the client at the end of the data-transferm
             # this way the client knows the connection will end
