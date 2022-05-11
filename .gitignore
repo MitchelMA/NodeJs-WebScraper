@@ -134,3 +134,6 @@ dist
 
 # ignore the stored data in data.json
 data.json
+
+# ignore the __pycache__
+__pycache__
