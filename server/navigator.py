@@ -21,7 +21,10 @@ def startDriver():
     # load in the config file to get the path to the chromedriver
     loadLocaleConfig()
     global driver
-    driver = webdriver.Chrome(CHROMEDRIVERPATH)
+    if(len(CHROMEDRIVERPATH.strip()) == 0):
+        driver = webdriver.Chrome()
+    else:
+        driver = webdriver.Chrome(CHROMEDRIVERPATH.strip())
 
 
 # function to search through a list of url's
@@ -33,4 +36,4 @@ def searchList(urls: list):
 
 if __name__ == '__main__':
     startDriver()
-    searchList(['http://32548.hosts1.ma-cloud.nl/Les09/'])
+    searchList(['https://marktplaats.nl'])
