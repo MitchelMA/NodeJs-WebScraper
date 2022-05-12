@@ -1,10 +1,10 @@
-from tkinter.tix import AUTO
-import traceback
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 # import this class for type specific variables
 from selenium.webdriver.chrome.webdriver import WebDriver
+# import this DriverManager so when someone uses this program,
+# they don't need to have a chromedrive.exe preinstalled somewhere
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 import json
