@@ -35,7 +35,7 @@ def serverSetup():
     server.bind(ADDR)
 
 
-def handle_client(conn, addr):
+def handleClient(conn, addr):
     print(f'[NEW CONNECTIONS {addr} connected')
     conn.send(GREET.encode(FORMAT));
     connected_list.append((conn, addr))
@@ -58,7 +58,7 @@ def handle_client(conn, addr):
             connected = False
             break
 
-        #  if there was a message with a length
+        # if there was a message with a length
         # there should always be a new message in the buffer
         # with the length that we previously recieved
         # if this fails, the protocol was incorrect
@@ -100,7 +100,7 @@ def handle_client(conn, addr):
         print("jsonMsg was nog niet gedefiniëerd (mogelijk door een voorgaande error):")
         print(err)
     except Exception as err:
-        print("Er ging iets mis!")
+        print("Er ging iets onverwachts mis!")
         print(err)
 
 
@@ -111,7 +111,7 @@ def start():
     # search for clients that want to connect
     while True:
         conn, addr = server.accept()
-        thread = threading.Thread(target=handle_client, args=(conn, addr))
+        thread = threading.Thread(target=handleClient, args=(conn, addr))
         thread.start()
         print(f'[ACTIVE CONNECTIONS] {threading.active_count() - 1}')
 
@@ -123,5 +123,9 @@ if __name__ == '__main__':
     serverSetup()
     # startup of the driver
     navigator.startDriver()
+    # load in the auto-message file
+    navigator.loadAutoMessage();
+    # the default startup of the navigator which brings you to the login-overlay
+    navigator.defaultStartup()
     #  start the server so it can listen to new connections
     start()
