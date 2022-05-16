@@ -15,7 +15,7 @@ FORMAT = 'utf-8'
 
 connected_list = [];
 
-server: socket
+server: socket.socket
 
 def loadConfig():
     with open('../server.json', encoding=FORMAT) as f:
