@@ -26,5 +26,17 @@ Verder maak ik gebruik van de volgende dependencies:
  - request-promise
  - dotenv
  - nodemailer
-  
- versies staan in de [package.json](./package.json).
+
+ versies staan in de [package.json](./package.json).  
+ Ook maak ik gebruik van de volgende modules in Python:
+ - selenium
+ - webdriver_manager
+
+Selenium kan worden geïnstalleerd met:
+```console
+$ pip install selenium
+```
+En webdriver_manager met:
+```console
+$ pip install webdriver-manager
+```
