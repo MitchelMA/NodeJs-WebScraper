@@ -2,6 +2,8 @@ import json
 import socket
 import threading
 import time
+import navigator
+from selenium.common.exceptions import WebDriverException
 
 HEADER = 64;
 HOST: int
@@ -13,7 +15,7 @@ FORMAT = 'utf-8'
 
 connected_list = [];
 
-server: socket
+server: socket.socket
 
 def loadConfig():
     with open('../server.json', encoding=FORMAT) as f:
@@ -33,13 +35,15 @@ def serverSetup():
     server.bind(ADDR)
 
 
-def handle_client(conn, addr):
+def handleClient(conn, addr):
     print(f'[NEW CONNECTIONS {addr} connected')
     conn.send(GREET.encode(FORMAT));
     connected_list.append((conn, addr))
 
     print(connected_list)
 
+    # json of the message we are waiting to recieve
+    jsonMsg: tuple
     connected = True
     time.sleep(0.01)
     #  loop that will run while it's connected
@@ -54,7 +58,7 @@ def handle_client(conn, addr):
             connected = False
             break
 
-        #  if there was a message with a length
+        # if there was a message with a length
         # there should always be a new message in the buffer
         # with the length that we previously recieved
         # if this fails, the protocol was incorrect
@@ -64,10 +68,13 @@ def handle_client(conn, addr):
                 msg = conn.recv(msg_length).decode(FORMAT)
                 print("MSG: " + msg + "\n")
                 jsonMsg = json.loads(msg)
-                print("\nJSON: ", jsonMsg)
-            except:
-                print("Iets ging mis!")
-                
+                print("\nJSON: ", jsonMsg)               
+            except ValueError as err:
+                print("Er ging iets mis bij het parsen van de JSON:")      
+                print(err)     
+            except Exception as err:
+                print("Er ging iets mis!")
+                print(err)
 
             # always send a message back to the client at the end of the data-transferm
             # this way the client knows the connection will end
@@ -82,6 +89,20 @@ def handle_client(conn, addr):
     del connected_list[connected_list.index((conn, addr))]
     conn.close()
 
+    # after releasing the client, try to navigate the navigator
+    try:
+        # let the webdriver search the list of hyperlinks
+        navigator.searchList(jsonMsg['hyperlinks'])
+    except WebDriverException as err:
+        print("Er ging iets niet goed met de webdriver:")
+        print(err)
+    except UnboundLocalError as err:
+        print("jsonMsg was nog niet gedefiniëerd (mogelijk door een voorgaande error):")
+        print(err)
+    except Exception as err:
+        print("Er ging iets onverwachts mis!")
+        print(err)
+
 
 def start():
     # let the server listen on the binded host and port
@@ -90,7 +111,7 @@ def start():
     # search for clients that want to connect
     while True:
         conn, addr = server.accept()
-        thread = threading.Thread(target=handle_client, args=(conn, addr))
+        thread = threading.Thread(target=handleClient, args=(conn, addr))
         thread.start()
         print(f'[ACTIVE CONNECTIONS] {threading.active_count() - 1}')
 
@@ -100,5 +121,11 @@ if __name__ == '__main__':
     loadConfig()
     #  setup for the server (binding)
     serverSetup()
+    # startup of the driver
+    navigator.startDriver()
+    # load in the auto-message file
+    navigator.loadAutoMessage();
+    # the default startup of the navigator which brings you to the login-overlay
+    navigator.defaultStartup()
     #  start the server so it can listen to new connections
     start()

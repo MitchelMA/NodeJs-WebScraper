@@ -134,3 +134,11 @@ dist
 
 # ignore the stored data in data.json
 data.json
+
+# ignore the __pycache__
+__pycache__
+
+# ignore the log file in the server directory
+server/log.json
+# ignore the auto-message.txt file in the server directory
+server/auto-message.txt
